@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.Random;
+
 import alerts.Message;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,25 +35,24 @@ public class Controller {
 
 	@FXML
 	void generate(ActionEvent event) {
-//    	validateWord();
-//    	validateNumber();
+    	validateWord();
+    	validateNumber();
 		validateSymbol();
-		
+
 		if (!validated) {
 			msg.setMessage(errorMessage);
-		}else {
+		} else {
 			generatePassword();
 		}
 
-
 	}
-	
+
 	@FXML
-    void reset(ActionEvent event) {
+	void reset(ActionEvent event) {
 		this.words.textProperty().setValue("");
 		this.numbers.textProperty().setValue("");
 		this.symbols.textProperty().setValue("");
-    }
+	}
 
 	public void validateWord() {
 		String word = this.words.textProperty().getValue();
@@ -98,11 +99,55 @@ public class Controller {
 //			msg.setMessage(errorMessage);
 //		}
 //	}
-	
+
 	public void generatePassword() {
+		String word = this.words.textProperty().getValue();
+		String number = this.numbers.textProperty().getValue();
+		String symbol = this.symbols.textProperty().getValue();
 		
-		String password = this.words.textProperty().getValue() + this.numbers.textProperty().getValue() + this.symbols.textProperty().getValue();
-		passwordLbl.setText(password);
+		char[] wordsChar = word.toCharArray();
+		char[] rawPassword = new char[wordsChar.length];
+		
+		char[] numbersChar = number.toCharArray();
+		char[] symbolsChar = symbol.toCharArray();
+
+		for (int i = 0; i < wordsChar.length; i++) {
+			if (i % 2 == 0) {
+				char upper = Character.toUpperCase(wordsChar[i]);
+				rawPassword[i] = upper;
+			}else {
+				char lower = Character.toLowerCase(wordsChar[i]);
+				rawPassword[i] = lower;
+			}
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append(rawPassword);
+		sb.append(numbersChar);
+		sb.append(symbolsChar);
+		
+		String password = sb.toString();
+		System.out.println(password);
+		
+		char[] passwordChar = password.toCharArray();
+		
+		Random rand = new Random();
+		char[] mixedPassword = new char[passwordChar.length];
+		
+		for (int i = 0; i < passwordChar.length; i++) {
+			int random = rand.nextInt(passwordChar.length);
+			System.out.println("RANDOM : " + random);
+			
+			if(mixedPassword[random]=='\0') {
+				System.out.println(random);
+				mixedPassword[random] = passwordChar[random];
+			}else {
+				System.out.println("ELSE");
+			}
+			System.out.println("mixed : " + String.valueOf(mixedPassword));
+		}
+		
+		passwordLbl.setText(String.valueOf(mixedPassword));
+		
 	}
 
 }
